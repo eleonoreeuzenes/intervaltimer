@@ -15,6 +15,18 @@ It blends functional workout timing with a simple, organic visual experience and
 
 ---
 
+## 🏁 **Getting Started**
+
+```bash
+git clone <repo-url>
+cd timer
+flutter pub get
+flutter run
+```
+
+---
+
+
 ## 🤝 Contributing
 
 This project is currently in active development as part of a personal learning journey.  
