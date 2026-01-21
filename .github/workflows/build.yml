@@ -13,7 +13,7 @@ jobs:
         with:
           flutter-version: '3.x'
       - run: flutter pub get
-      - run: flutter analyze || true
+      - run: flutter analyze
 
   build:
     runs-on: ubuntu-latest
