@@ -5,17 +5,32 @@ import 'package:google_fonts/google_fonts.dart';
 import '../widgets/blob_painter.dart';
 
 class SimpleTimerScreen extends StatefulWidget {
-  const SimpleTimerScreen({super.key});
+  final int workDuration;
+  final int restDuration;
+  final String exerciseName;
+  final int sets;
+
+  const SimpleTimerScreen({
+    super.key,
+    required this.workDuration,
+    required this.restDuration,
+    required this.exerciseName,
+    required this.sets,
+  });
 
   @override
   State<SimpleTimerScreen> createState() => _SimpleTimerScreenState();
 }
 
+enum TimerPhase { work, rest, done }
+
 class _SimpleTimerScreenState extends State<SimpleTimerScreen>
     with TickerProviderStateMixin {
-  static const int initialSeconds = 60;
-  int remainingSeconds = initialSeconds;
+  late int remainingSeconds;
+  late int currentSet;
+  late TimerPhase phase;
   Timer? timer;
+  bool isRunning = false;
 
   late AnimationController blobController;
   double blobTime = 0.0;
@@ -23,6 +38,9 @@ class _SimpleTimerScreenState extends State<SimpleTimerScreen>
   @override
   void initState() {
     super.initState();
+    currentSet = 1;
+    phase = TimerPhase.work;
+    remainingSeconds = widget.workDuration;
 
     blobController = AnimationController(
       vsync: this,
@@ -45,6 +63,9 @@ class _SimpleTimerScreenState extends State<SimpleTimerScreen>
 
   void startTimer() {
     timer?.cancel();
+    setState(() {
+      isRunning = true;
+    });
     timer = Timer.periodic(const Duration(seconds: 1), (t) {
       if (remainingSeconds > 0) {
         setState(() {
@@ -52,13 +73,39 @@ class _SimpleTimerScreenState extends State<SimpleTimerScreen>
         });
       } else {
         t.cancel();
+        handlePhaseTransition();
       }
     });
   }
 
+  void handlePhaseTransition() {
+    if (phase == TimerPhase.work && widget.restDuration > 0) {
+      setState(() {
+        phase = TimerPhase.rest;
+        remainingSeconds = widget.restDuration;
+        startTimer();
+      });
+    } else if (currentSet < widget.sets) {
+      setState(() {
+        currentSet++;
+        phase = TimerPhase.work;
+        remainingSeconds = widget.workDuration;
+        startTimer();
+      });
+    } else {
+      setState(() {
+        phase = TimerPhase.done;
+      });
+    }
+  }
+
   void resetTimer() {
+    timer?.cancel();
     setState(() {
-      remainingSeconds = initialSeconds;
+      isRunning = false;
+      currentSet = 1;
+      phase = TimerPhase.work;
+      remainingSeconds = widget.workDuration;
     });
   }
 
@@ -70,10 +117,29 @@ class _SimpleTimerScreenState extends State<SimpleTimerScreen>
 
   @override
   Widget build(BuildContext context) {
-    final progress = 1 - (remainingSeconds / initialSeconds);
+    if (phase == TimerPhase.done) {
+      return Scaffold(
+        backgroundColor: Colors.pinkAccent,
+        body: Center(
+          child: Text(
+            "done",
+            style: GoogleFonts.baloo2(
+              fontSize: 80,
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+      );
+    }
+
+    final totalDuration =
+        phase == TimerPhase.work ? widget.workDuration : widget.restDuration;
+    final progress = 1 - (remainingSeconds / totalDuration);
+    final isWork = phase == TimerPhase.work;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: isWork ? Colors.white :  Color(0xFFF95607),
       body: Stack(
         children: [
           Positioned.fill(
@@ -81,36 +147,64 @@ class _SimpleTimerScreenState extends State<SimpleTimerScreen>
               painter: MorphingBlobPainter(
                 progress: progress,
                 time: blobTime,
+                color: isWork ? const Color(0xFFFFBE0C) : Colors.white,
+                fromBottom: isWork,
               ),
             ),
           ),
-          Center(
-            child: Text(
-              formatTime(remainingSeconds),
-              style: GoogleFonts.baloo2(
-                fontSize: 140,
-                color: Colors.black,
-                fontWeight: FontWeight.bold,
+          SizedBox(
+            width: double.infinity,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+              Text(
+                formatTime(remainingSeconds),
+                style: GoogleFonts.baloo2(
+                  fontSize: 100,
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                  height: 0.8,
+                ),
               ),
-            ),
+              Text(
+                isWork ? widget.exerciseName : "Rest",
+                style: GoogleFonts.baloo2(
+                  fontSize: 28,
+                  color: Colors.black87,
+                ),
+              ),
+              Text(
+                "Set $currentSet of ${widget.sets}",
+                style: GoogleFonts.baloo2(
+                  fontSize: 20,
+                  color: Colors.black54,
+                ),
+              ),
+              const SizedBox(height: 40),
+              if (!isRunning)
+                ElevatedButton(
+                  onPressed: startTimer,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.black,
+                    padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                  ),
+                  child: Text(
+                    "start",
+                    style: GoogleFonts.baloo2(
+                      fontSize: 20,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+            ],
+          ),
           ),
         ],
       ),
-      floatingActionButton: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          FloatingActionButton(
-            heroTag: "start",
-            onPressed: startTimer,
-            child: const Icon(Icons.play_arrow),
-          ),
-          const SizedBox(width: 16),
-          FloatingActionButton(
-            heroTag: "reset",
-            onPressed: resetTimer,
-            child: const Icon(Icons.refresh),
-          ),
-        ],
+      floatingActionButton: FloatingActionButton(
+        onPressed: resetTimer,
+        child: const Icon(Icons.refresh),
       ),
     );
   }

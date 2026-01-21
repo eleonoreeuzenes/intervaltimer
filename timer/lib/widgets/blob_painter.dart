@@ -4,16 +4,20 @@ import 'package:flutter/material.dart';
 class MorphingBlobPainter extends CustomPainter {
   final double progress;
   final double time;
+   final Color color;
+  final bool fromBottom;
 
   MorphingBlobPainter({
     required this.progress,
     required this.time,
+        required this.color,
+    required this.fromBottom,
   });
 
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = const Color(0xFFFFBE0C)
+      ..color = color
       ..style = PaintingStyle.fill;
 
     final path = Path();
