@@ -17,7 +17,7 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: (github.event_name == 'pull_request' && github.base_ref == 'main')
     needs: analyze
     steps:
       - uses: actions/checkout@v4
@@ -27,12 +27,12 @@ jobs:
       - uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
-          java-version: '11'
+          java-version: '17'
       
       - run: flutter pub get
       - run: flutter build apk --release
       
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: apk
           path: timer/build/app/outputs/flutter-apk/app-release.apk
