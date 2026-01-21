@@ -74,7 +74,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       padding: const EdgeInsets.symmetric(vertical: 12),
       child: Column(
         children: [
-          Text("$label",
+          Text(label,
                           style: GoogleFonts.baloo2(
                   fontSize: 28,
                   color: Colors.black87,
@@ -91,7 +91,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
           const SizedBox(width: 16),
           Text(
-            "$value",
+            value,
             style: GoogleFonts.baloo2(
               fontSize: 72,
               color: Colors.black,
