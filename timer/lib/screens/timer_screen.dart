@@ -34,6 +34,7 @@ class _SimpleTimerScreenState extends State<SimpleTimerScreen>
 
   late AnimationController blobController;
   double blobTime = 0.0;
+  bool doneNavigated = false;
 
   @override
   void initState() {
@@ -118,6 +119,14 @@ class _SimpleTimerScreenState extends State<SimpleTimerScreen>
   @override
   Widget build(BuildContext context) {
     if (phase == TimerPhase.done) {
+      if (!doneNavigated) {
+        doneNavigated = true;
+        Future.delayed(const Duration(seconds: 2), () {
+          if (mounted) {
+            Navigator.pop(context);
+          }
+        });
+      }
       return Scaffold(
         backgroundColor: Colors.pinkAccent,
         body: Center(
