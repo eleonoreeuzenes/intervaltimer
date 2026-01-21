@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:vibration/vibration.dart';
 import '../widgets/blob_painter.dart';
 
 class SimpleTimerScreen extends StatefulWidget {
@@ -97,6 +98,9 @@ class _SimpleTimerScreenState extends State<SimpleTimerScreen>
       setState(() {
         phase = TimerPhase.done;
       });
+      Vibration.vibrate(
+        pattern: [500, 200, 500], 
+      );
     }
   }
 
