@@ -1,4 +1,4 @@
-# **Interval timer — A Minimalist Organic Interval Timer**
+# **Interval timer: A Minimalist Organic Interval Timer**
 
 This project is a clean, interval‑training timer built with Flutter.  
 It blends functional workout timing with a simple, organic visual experience and is designed to work even when the screen is locked.
@@ -19,9 +19,8 @@ It blends functional workout timing with a simple, organic visual experience and
 
 ```bash
 git clone <repo-url>
-cd timer
 flutter pub get
-flutter run
+flutter run -d chrome
 ```
 
 ---

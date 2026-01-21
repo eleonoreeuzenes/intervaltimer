@@ -125,9 +125,10 @@ class _SimpleTimerScreenState extends State<SimpleTimerScreen>
     if (phase == TimerPhase.done) {
       if (!doneNavigated) {
         doneNavigated = true;
+        final navigator = Navigator.of(context);
         Future.delayed(const Duration(seconds: 2), () {
           if (mounted) {
-            Navigator.pop(context);
+            navigator.pop();
           }
         });
       }
