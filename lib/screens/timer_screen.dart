@@ -85,6 +85,7 @@ class _SimpleTimerScreenState extends State<SimpleTimerScreen>
       setState(() {
         phase = TimerPhase.rest;
         remainingSeconds = widget.restDuration;
+        Vibration.vibrate(duration: 500);
         startTimer();
       });
     } else if (currentSet < widget.sets) {
@@ -92,6 +93,7 @@ class _SimpleTimerScreenState extends State<SimpleTimerScreen>
         currentSet++;
         phase = TimerPhase.work;
         remainingSeconds = widget.workDuration;
+        Vibration.vibrate(duration: 300);
         startTimer();
       });
     } else {
@@ -219,7 +221,7 @@ class _SimpleTimerScreenState extends State<SimpleTimerScreen>
       floatingActionButton: FloatingActionButton(
         onPressed: resetTimer,
         child: const Icon(Icons.refresh),
-      ),
+      ),   
     );
   }
 }
