@@ -69,50 +69,55 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-  Widget buildSettingRow(String label, String value, String field) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12),
-      child: Column(
-        children: [
-          Text(label,
-                          style: GoogleFonts.baloo2(
-                  fontSize: 28,
-                  color: Colors.black87,
-                  height: 0.8,
-                ),),
-      Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          IconButton(
-            onPressed: () => decrement(field),
-            icon: const Icon(Icons.remove_circle),
-            iconSize: 48,
-            color: Colors.black,
+Widget buildSettingRow(String label, String value, String field) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(vertical: 12),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Text(
+          label,
+          style: GoogleFonts.baloo2(
+            fontSize: 28,
+            color: Colors.black87,
+            height: 0.8,
           ),
-          const SizedBox(width: 16),
-          Text(
-            value,
-            style: GoogleFonts.baloo2(
-              fontSize: 72,
-              color: Colors.black,
-              fontWeight: FontWeight.bold,
+        ),
+
+        Center(
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              IconButton(
+                onPressed: () => decrement(field),
+                icon: const Icon(Icons.remove_circle),
+                iconSize: 48,
+                color: Colors.black,
               ),
-      
+              const SizedBox(width: 14),
+              Text(
+                value,
+                style: GoogleFonts.baloo2(
+                  fontSize: 72,
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(width: 14),
+              IconButton(
+                onPressed: () => increment(field),
+                icon: const Icon(Icons.add_circle),
+                iconSize: 48,
+                color: Colors.black,
+              ),
+            ],
           ),
-          const SizedBox(width: 16),
-          IconButton(
-            onPressed: () => increment(field),
-            icon: const Icon(Icons.add_circle),
-            iconSize: 48,
-            color: Colors.black,
-          ),
-        ],
-      ),
-        ],
+        ),
+      ],
     ),
-    );
-  
-  }
+  );
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -122,11 +127,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 48),
         child: Column(
           children: [
-            // Cat illustration placeholder
-            // const SizedBox(height: 10),
-            // const Icon(Icons.pets, size: 80, color: Colors.black), // Replace with actual image later
-            // const SizedBox(height: 10),
-
             buildSettingRow("sets", "$sets", "sets"),
             buildSettingRow("work", formatTime(workSeconds), "work"),
             buildSettingRow("rest", formatTime(restSeconds), "rest"),
