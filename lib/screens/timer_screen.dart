@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:vibration/vibration.dart';
 import '../widgets/blob_painter.dart';
+import 'package:flutter/services.dart';
 
 class SimpleTimerScreen extends StatefulWidget {
   final int workDuration;
@@ -70,6 +71,10 @@ class _SimpleTimerScreenState extends State<SimpleTimerScreen>
     });
     timer = Timer.periodic(const Duration(seconds: 1), (t) {
       if (remainingSeconds > 0) {
+        if ( remainingSeconds < 4 ) {
+          Vibration.vibrate(duration: 200);
+          SystemSound.play(SystemSoundType.alert);
+        }
         setState(() {
           remainingSeconds--;
         });
@@ -86,6 +91,7 @@ class _SimpleTimerScreenState extends State<SimpleTimerScreen>
         phase = TimerPhase.rest;
         remainingSeconds = widget.restDuration;
         Vibration.vibrate(duration: 500);
+        SystemSound.play(SystemSoundType.alert);
         startTimer();
       });
     } else if (currentSet < widget.sets) {
@@ -94,6 +100,7 @@ class _SimpleTimerScreenState extends State<SimpleTimerScreen>
         phase = TimerPhase.work;
         remainingSeconds = widget.workDuration;
         Vibration.vibrate(duration: 300);
+        SystemSound.play(SystemSoundType.alert);
         startTimer();
       });
     } else {
@@ -103,6 +110,7 @@ class _SimpleTimerScreenState extends State<SimpleTimerScreen>
       Vibration.vibrate(
         pattern: [500, 200, 500], 
       );
+      SystemSound.play(SystemSoundType.alert);
     }
   }
 
