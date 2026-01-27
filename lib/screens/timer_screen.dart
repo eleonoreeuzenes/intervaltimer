@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:vibration/vibration.dart';
 import '../widgets/blob_painter.dart';
-import 'package:flutter/services.dart';
+import 'package:intervatimer/helpers/sound_player.dart';
 
 class SimpleTimerScreen extends StatefulWidget {
   final int workDuration;
@@ -71,10 +71,13 @@ class _SimpleTimerScreenState extends State<SimpleTimerScreen>
     });
     timer = Timer.periodic(const Duration(seconds: 1), (t) {
       if (remainingSeconds > 0) {
-        if ( remainingSeconds < 4 ) {
+        if (remainingSeconds == 3 ||
+            remainingSeconds == 2 ||
+            remainingSeconds == 1) {
           Vibration.vibrate(duration: 200);
-          SystemSound.play(SystemSoundType.alert);
+          TimerSounds.beep();
         }
+
         setState(() {
           remainingSeconds--;
         });
@@ -86,12 +89,12 @@ class _SimpleTimerScreenState extends State<SimpleTimerScreen>
   }
 
   void handlePhaseTransition() {
-    if (phase == TimerPhase.work && widget.restDuration > 0) {
+    if (phase == TimerPhase.work && widget.restDuration > 0 && currentSet > widget.sets) {
       setState(() {
         phase = TimerPhase.rest;
         remainingSeconds = widget.restDuration;
-        Vibration.vibrate(duration: 500);
-        SystemSound.play(SystemSoundType.alert);
+        Vibration.vibrate(duration: 600);
+        TimerSounds.buzzer();
         startTimer();
       });
     } else if (currentSet < widget.sets) {
@@ -99,18 +102,14 @@ class _SimpleTimerScreenState extends State<SimpleTimerScreen>
         currentSet++;
         phase = TimerPhase.work;
         remainingSeconds = widget.workDuration;
-        Vibration.vibrate(duration: 300);
-        SystemSound.play(SystemSoundType.alert);
+        Vibration.vibrate(duration: 600);
+        TimerSounds.buzzer();
         startTimer();
       });
     } else {
       setState(() {
         phase = TimerPhase.done;
       });
-      Vibration.vibrate(
-        pattern: [500, 200, 500], 
-      );
-      SystemSound.play(SystemSoundType.alert);
     }
   }
 
