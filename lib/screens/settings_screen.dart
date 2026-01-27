@@ -10,9 +10,9 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  int sets = 5;
-  int workSeconds = 30;
-  int restSeconds = 5;
+  int sets = 15;
+  int workSeconds = 60;
+  int restSeconds = 10;
 
 // for implementing cusotmized names in the future
   String exerciseName = "Workout";
