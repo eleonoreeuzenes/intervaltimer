@@ -77,7 +77,7 @@ class _SimpleTimerScreenState extends State<SimpleTimerScreen>
           Vibration.vibrate(duration: 200);
         }
 
-        if (remainingSeconds == 3) {
+        if (remainingSeconds == 5) {
           TimerSounds.buzzer();
         }
 
