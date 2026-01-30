@@ -75,7 +75,10 @@ class _SimpleTimerScreenState extends State<SimpleTimerScreen>
             remainingSeconds == 2 ||
             remainingSeconds == 1) {
           Vibration.vibrate(duration: 200);
-          TimerSounds.beep();
+        }
+
+        if (remainingSeconds == 3) {
+          TimerSounds.buzzer();
         }
 
         setState(() {
@@ -88,30 +91,33 @@ class _SimpleTimerScreenState extends State<SimpleTimerScreen>
     });
   }
 
-  void handlePhaseTransition() {
-    if (phase == TimerPhase.work && widget.restDuration > 0 && currentSet > widget.sets) {
-      setState(() {
-        phase = TimerPhase.rest;
-        remainingSeconds = widget.restDuration;
-        Vibration.vibrate(duration: 600);
-        TimerSounds.buzzer();
-        startTimer();
-      });
-    } else if (currentSet < widget.sets) {
+ void handlePhaseTransition() {
+    if (phase == TimerPhase.work) {
+      if (currentSet < widget.sets && widget.restDuration > 0) {
+        setState(() {
+          phase = TimerPhase.rest;
+          remainingSeconds = widget.restDuration;
+          Vibration.vibrate(duration: 600);
+          startTimer();
+        });
+      } 
+      else if (currentSet == widget.sets) {
+        setState(() {
+          phase = TimerPhase.done;
+        });
+      }
+    }
+    else if (phase == TimerPhase.rest) {
       setState(() {
         currentSet++;
         phase = TimerPhase.work;
         remainingSeconds = widget.workDuration;
         Vibration.vibrate(duration: 600);
-        TimerSounds.buzzer();
         startTimer();
-      });
-    } else {
-      setState(() {
-        phase = TimerPhase.done;
       });
     }
   }
+
 
   void resetTimer() {
     timer?.cancel();
